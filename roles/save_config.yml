@@ -1,0 +1,7 @@
+---
+- name: Save Config
+  ios_config:
+    diff_against: startup
+    save_when: modified
+  tags: save
+ 

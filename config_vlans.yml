@@ -1,0 +1,19 @@
+---
+- hosts: sw
+  gather_facts: False
+
+  tasks:
+
+    - name: Configure VTP to transparent
+      ios_config:
+        commands:
+          - vtp mode transparent
+
+    - name: Configure vlans
+      ios_vlan:
+        aggregate:
+        - { vlan_id: 10, name: MGT, interfaces: G0/0 }
+        - { vlan_id: 999, name: Bogus }
+        
+    - import_tasks: "roles/save_config.yml"     
+

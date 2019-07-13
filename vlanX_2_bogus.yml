@@ -1,0 +1,50 @@
+---
+- hosts: sw
+  gather_facts: False
+  vars:
+    # Vlan to be move from
+    vlan_m: "1"
+    # Bogus vlan
+    b_vlan: "999"
+    # Initialize interface list
+    ints: []
+
+  roles:
+    - ansible-network.network-engine
+
+
+  tasks:
+
+    - name: Get vlan config
+      ios_command:
+        commands:
+          - show running-config all | include interface|switchport access vlan|switchport mode trunk
+      register: config
+
+    - name: Parse config output
+      command_parser:
+        file: "roles/nterface_vlan.yml"
+        content: "{{ config.stdout[0] }}"
+      # Return "int_vlan" list
+
+    - name: Set interfaces
+      set_fact:
+        # Create list of interface with "vlan_m" or "b_vlan"
+        temp_int: "{{ ints }} + [ '{{item.interface}}' ]"
+      when: (item.vlan == vlan_m  and item.trunk != true) or item.vlan == b_vlan
+      loop: "{{ int_vlan }}"
+
+    - name: Vlan {{  vlan_m }} interfaces to Bogus {{ b_vlan }}
+      ios_vlan:
+        vlan_id: "{{ b_vlan }}"
+        interfaces: "{{ ints }}"
+        state: suspend 
+   
+    - name: Test vlan interface association
+      ios_vlan:
+        vlan_id: "{{ b_vlan }}"
+        associated_interfaces: "{{ ints }}" 
+
+
+    - import_tasks: "roles/save_config.yml"
+
