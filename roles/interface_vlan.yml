@@ -8,7 +8,7 @@
 
 - name: Match keys values
   pattern_group:
-    - name: Match interface 
+    - name: Match interface
       pattern_match:
         regex: "interface\\s+(\\w+\\/.+)"
         content: "{{ item }}"
