@@ -23,7 +23,7 @@
 
     - name: Parse config output
       command_parser:
-        file: "roles/nterface_vlan.yml"
+        file: "roles/interface_vlan.yml"
         content: "{{ config.stdout[0] }}"
       # Return "int_vlan" list
 
