@@ -14,6 +14,5 @@
         aggregate:
         - { vlan_id: 10, name: MGT, interfaces: G0/0 }
         - { vlan_id: 999, name: Bogus }
-        
-    - import_tasks: "roles/save_config.yml"     
 
+    - import_tasks: "roles/save_config.yml"
